@@ -173,6 +173,46 @@ function seedDatabase() {
       '08:30 AM'
     );
 
+    // 5. Demo Student B — Kavita Patil (Dharwad)
+    const student2 = insertUser.run(
+      'Kavita Patil',
+      'kavita@routeless.ai',
+      passwordHash,
+      'student',
+      '+91 97441 23456',
+      '18-22',
+      'Dharwad',
+      'Hubli',
+      'Kalghatgi',
+      'SDM College of Engineering, Dharwad',
+      'Near Kalghatgi Bus Stand',
+      'Kalghatgi KSRTC Stop',
+      'kn',
+      'light',
+      '07:00 AM',
+      '08:30 AM'
+    );
+
+    // 6. Demo Student C — Ravi Kumar (Belagavi)
+    const student3 = insertUser.run(
+      'Ravi Kumar M.',
+      'ravi@routeless.ai',
+      passwordHash,
+      'student',
+      '+91 96320 78901',
+      '18-22',
+      'Belagavi',
+      'Gokak',
+      'Gokak Town',
+      'KLS Gogte Institute of Technology, Belagavi',
+      'Gokak Bus Stand',
+      'Gokak KSRTC Stand',
+      'hi',
+      'light',
+      '07:15 AM',
+      '08:45 AM'
+    );
+
     // Vehicles
     const insertVeh = db.prepare(`
       INSERT INTO vehicles (provider_id, vehicle_name, vehicle_type, registration_number, total_seats, available_seats, verification_status, is_simulated_gps, current_lat, current_lng)

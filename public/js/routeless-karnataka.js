@@ -10,6 +10,60 @@
 
   const API_BASE = '/api';
 
+  // ---- IST Date/Time Utility (Asia/Kolkata, UTC+5:30) ----
+  const IST_TZ = 'Asia/Kolkata';
+
+  window.RoutelessTime = {
+    /**
+     * Format any date to IST display string
+     * e.g. "13 Nov 2026, 1:30 PM"
+     */
+    toIST: function(input) {
+      if (!input) return '—';
+      try {
+        const d = new Date(input);
+        if (isNaN(d.getTime())) return String(input);
+        return new Intl.DateTimeFormat('en-IN', {
+          timeZone: IST_TZ,
+          day: 'numeric', month: 'short', year: 'numeric',
+          hour: '2-digit', minute: '2-digit', hour12: true
+        }).format(d);
+      } catch (e) { return String(input); }
+    },
+    toISTTime: function(input) {
+      if (!input) return '—';
+      // If already a time string like "07:45 AM", just append IST
+      if (typeof input === 'string' && /^\d{1,2}:\d{2}\s*(AM|PM)$/i.test(input.trim())) {
+        return input.trim() + ' IST';
+      }
+      try {
+        const d = new Date(input);
+        if (isNaN(d.getTime())) return String(input);
+        return new Intl.DateTimeFormat('en-IN', {
+          timeZone: IST_TZ, hour: '2-digit', minute: '2-digit', hour12: true
+        }).format(d) + ' IST';
+      } catch (e) { return String(input); }
+    },
+    toISTDate: function(input) {
+      if (!input) return '—';
+      try {
+        const d = new Date(input);
+        if (isNaN(d.getTime())) return String(input);
+        return new Intl.DateTimeFormat('en-IN', {
+          timeZone: IST_TZ, day: 'numeric', month: 'short', year: 'numeric'
+        }).format(d);
+      } catch (e) { return String(input); }
+    },
+    nowIST: function() {
+      return new Intl.DateTimeFormat('en-IN', {
+        timeZone: IST_TZ,
+        day: 'numeric', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', hour12: true
+      }).format(new Date());
+    }
+  };
+
+
   // 1. Comprehensive Multilingual Dictionary for Karnataka Frontend
   const TRANSLATIONS = {
     kn: {
@@ -632,48 +686,71 @@
       });
     }
 
-    // Top bar district button: "location_on ಹಾವೇರಿ / Haveri District expand_more"
-    const distBtn = Array.from(document.querySelectorAll('button')).find(b =>
-      b.textContent.includes('Haveri') || b.textContent.includes('ಹಾವೇರಿ') || b.textContent.includes('District')
-    );
+    // Top bar district button — specifically the location button in the header
+    // Match only <button> inside <header> that has location_on icon, to avoid false positives
+    const distBtn = document.querySelector('header button[aria-label*="Location"], header button[aria-label*="District"]')
+      || Array.from(document.querySelectorAll('header button')).find(b => {
+           const icon = b.querySelector('.material-symbols-outlined');
+           return icon && (icon.textContent.trim() === 'location_on' || icon.textContent.trim() === 'map');
+         });
     if (distBtn) {
       distBtn.style.cursor = 'pointer';
-      distBtn.addEventListener('click', () => openDistrictModal());
+      distBtn.addEventListener('click', (e) => { e.stopPropagation(); openDistrictModal(); });
     }
 
-    // Floating center mic button (Bottom Nav AI Assistant)
-    const floatingMic = Array.from(document.querySelectorAll('a, button, div')).find(el =>
-      (el.textContent.includes('AI Assistant') || el.textContent.includes('AI ಸಹಾಯಕ')) && el.querySelector('.material-symbols-outlined')
-    );
+    // Floating aside AI Assistant button — match ONLY the <button> inside <aside>, not wrappers
+    // Use aria-label for precision to avoid matching any container that holds "AI Assistant" text
+    const floatingMic = document.querySelector(
+      'aside button[aria-label*="AI"], aside button[aria-label*="Voice"], aside button[aria-label*="ಧ್ವನಿ"]'
+    ) || document.querySelector('aside button');
     if (floatingMic) {
       floatingMic.style.cursor = 'pointer';
       floatingMic.addEventListener('click', (e) => {
+        e.stopPropagation();
         e.preventDefault();
         openVoiceAssistantModal();
       });
     }
 
     // Connect Quick Service cards on Home page
-    document.querySelectorAll('button, a').forEach(el => {
-      const text = el.textContent.trim();
-      if (text.includes('ಸಾರಿಗೆ ಹುಡುಕಿ') || text.includes('Find Transport')) {
+    // CRITICAL: only match direct text content of the ELEMENT ITSELF, not descendants
+    // Use direct child text nodes to avoid matching parent containers
+    document.querySelectorAll('button').forEach(el => {
+      // Get only the text from direct text nodes (not from child elements) to avoid false positives
+      const directText = Array.from(el.childNodes)
+        .filter(n => n.nodeType === Node.TEXT_NODE)
+        .map(n => n.textContent.trim())
+        .join('');
+      // Also check span direct children text
+      const spanTexts = Array.from(el.querySelectorAll(':scope > span, :scope > div > span'))
+        .map(s => s.textContent.trim())
+        .join(' ');
+      const text = (directText + ' ' + spanTexts).trim();
+
+      // Only match Quick Service grid buttons — they have specific Kannada/English labels
+      if ((text.includes('ಸಾರಿಗೆ ಹುಡುಕಿ') || (text.includes('Find Transport') && !text.includes('Find') || text === 'Find Transport'))
+          && el.closest('section')) {
         el.addEventListener('click', (e) => {
           if (window.location.pathname !== '/find-transport') {
             e.preventDefault();
             window.location.href = '/find-transport';
           }
         });
-      } else if (text.includes('ಸ್ಟಾಪ್ ವಿನಂತಿ') || text.includes('Stop on Demand')) {
+      } else if ((text.includes('ಸ್ಟಾಪ್ ವಿನಂತಿ') || text.includes('Bus Stop on Demand') || text.includes('Stop on Demand') || text.includes('ನಿಲುಗಡೆ ವಿನಂತಿ'))
+                 && el.closest('section')) {
         el.addEventListener('click', (e) => {
           e.preventDefault();
           openStopOnDemandModal();
         });
-      } else if (text.includes('ವಿದ್ಯಾರ್ಥಿ ಪೂಲ್') || text.includes('Cruiser Pool')) {
+      } else if ((text.includes('ವಿದ್ಯಾರ್ಥಿ ಪೂಲ್') || text.includes('Cruiser Pool') || text.includes('ರೈಡ್ ಶೇರ್'))
+                 && el.closest('section')) {
         el.addEventListener('click', (e) => {
           e.preventDefault();
           window.location.href = '/find-transport?mode=shared';
         });
-      } else if (text.includes('AI ಸಹಾಯಕ') && !el.closest('nav')) {
+      } else if ((text.includes('AI ಧ್ವನಿ ಸಹಾಯಕ') || text.includes('AI Assistant') || text.includes('ಧ್ವನಿ ಸಹಾಯಕ'))
+                 && el.closest('section') && !el.closest('nav') && !el.closest('aside')) {
+        // Quick service card AI button (grid card, not floating aside button)
         el.addEventListener('click', (e) => {
           e.preventDefault();
           openVoiceAssistantModal();
@@ -1073,10 +1150,126 @@
     setTimeout(() => toast.remove(), 2500);
   }
 
+  // ---- Language First-Time Selection Screen ----
+  function showLanguageSelectionScreen() {
+    const existing = document.getElementById('routeless-lang-select-screen');
+    if (existing) return;
+
+    const overlay = document.createElement('div');
+    overlay.id = 'routeless-lang-select-screen';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:var(--color-surface,#faf8ff);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;font-family:Inter,sans-serif;';
+    overlay.innerHTML = `
+      <div style="text-align:center;margin-bottom:1.5rem;">
+        <div style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--color-surface-container-low,#f2f3ff);padding:0.5rem 1rem;border-radius:999px;margin-bottom:1rem;">
+          <span class="material-symbols-outlined" style="color:var(--color-primary,#00236f)">directions_bus</span>
+          <span style="font-weight:700;color:var(--color-primary,#00236f)">ROUTELESS</span>
+        </div>
+        <h1 style="font-size:1.3rem;font-weight:700;color:var(--color-on-surface,#131b2e);margin:0 0 0.5rem;">Choose Your Language</h1>
+        <p style="font-size:0.85rem;color:var(--color-on-surface-variant,#444651);">ನಿಮ್ಮ ಭಾಷೆ ಆಯ್ಕೆ ಮಾಡಿ • अपनी भाषा चुनें</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;width:100%;max-width:360px;">
+        ${[
+          { code:'kn', name:'ಕನ್ನಡ', sub:'Kannada', flag:'🇮🇳' },
+          { code:'en', name:'English', sub:'English', flag:'🌐' },
+          { code:'hi', name:'हिन्दी', sub:'Hindi', flag:'🇮🇳' },
+          { code:'te', name:'తెలుగు', sub:'Telugu', flag:'🇮🇳' },
+          { code:'ta', name:'தமிழ்', sub:'Tamil', flag:'🇮🇳' },
+          { code:'ml', name:'മലയാളം', sub:'Malayalam', flag:'🇮🇳' }
+        ].map(l => `
+          <button data-lang-code="${l.code}"
+            style="padding:1rem;border-radius:1rem;border:2px solid var(--color-outline-variant,#c5c5d3);background:var(--color-surface-container-lowest,#fff);cursor:pointer;text-align:center;transition:all 0.15s;">
+            <div style="font-size:1.5rem;margin-bottom:0.3rem;">${l.flag}</div>
+            <div style="font-weight:700;font-size:1rem;color:var(--color-on-surface,#131b2e);">${l.name}</div>
+            <div style="font-size:0.7rem;color:var(--color-on-surface-variant,#444651);">${l.sub}</div>
+          </button>
+        `).join('')}
+      </div>
+      <p style="font-size:0.72rem;color:var(--color-on-surface-variant,#444651);margin-top:1rem;text-align:center;">You can change this anytime in Settings.</p>
+    `;
+
+    document.body.appendChild(overlay);
+
+    overlay.querySelectorAll('[data-lang-code]').forEach(btn => {
+      btn.addEventListener('mouseover', () => { btn.style.borderColor = 'var(--color-primary,#00236f)'; btn.style.background = 'var(--color-surface-container-low,#f2f3ff)'; });
+      btn.addEventListener('mouseout', () => { btn.style.borderColor = 'var(--color-outline-variant,#c5c5d3)'; btn.style.background = 'var(--color-surface-container-lowest,#fff)'; });
+      btn.addEventListener('click', () => {
+        const code = btn.getAttribute('data-lang-code');
+        localStorage.setItem('routeless_lang_chosen', '1');
+        window.setLanguage(code);
+        overlay.style.opacity = '0';
+        overlay.style.transition = 'opacity 0.3s';
+        setTimeout(() => overlay.remove(), 300);
+      });
+    });
+  }
+
+  // ---- Proper Logout ----
+  window.routelessLogout = async function() {
+    const token = localStorage.getItem('routeless_token');
+    try {
+      if (token) {
+        await fetch(`${API_BASE}/auth/logout`, {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
+        });
+      }
+    } catch (e) { /* ignore network errors on logout */ }
+
+    // Clear all auth state
+    localStorage.removeItem('routeless_token');
+    localStorage.removeItem('routeless_user');
+    // Keep language and theme preferences
+    sessionStorage.clear();
+
+    // Redirect to login
+    window.location.replace('/login');
+  };
+
+  // Wire logout buttons on any page
+  function initLogout() {
+    document.querySelectorAll('[data-action="logout"], #logout-btn, .logout-btn').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (confirm('Sign out of Routeless?\n\nYour language and theme preferences will be saved.')) {
+          window.routelessLogout();
+        }
+      });
+    });
+
+    // Also handle text-based logout buttons
+    document.querySelectorAll('button').forEach(btn => {
+      const icon = btn.querySelector('.material-symbols-outlined');
+      if (icon && icon.textContent.trim() === 'logout') {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (confirm('Sign out of Routeless?')) window.routelessLogout();
+        });
+      }
+    });
+  }
+
   // Startup Orchestrator
   document.addEventListener('DOMContentLoaded', () => {
     initNavigation();
     initBookingOperations();
     syncPreferencesOnStartup();
+    initLogout();
+
+    // First-time language selection
+    const hasChosen = localStorage.getItem('routeless_lang_chosen');
+    const hasToken = localStorage.getItem('routeless_token');
+    const isAuthPage = ['/login', '/register'].includes(window.location.pathname);
+
+    if (!hasChosen && !isAuthPage) {
+      showLanguageSelectionScreen();
+    }
+
+    // Apply IST time to any element with data-timestamp attribute
+    document.querySelectorAll('[data-timestamp]').forEach(el => {
+      const ts = el.getAttribute('data-timestamp');
+      el.textContent = window.RoutelessTime.toIST(ts);
+    });
   });
 })();
