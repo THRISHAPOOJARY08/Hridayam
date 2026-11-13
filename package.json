@@ -9,6 +9,9 @@
     "test": "node tests/run_all_tests.js",
     "seed": "node -e \"require('./src/db/schema').initSchema(); require('./src/db/seed').seedDatabase();\""
   },
+  "engines": {
+    "node": ">=22.5.0"
+  },
   "keywords": [
     "rural-transportation",
     "ai-matching",

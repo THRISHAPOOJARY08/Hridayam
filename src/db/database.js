@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const dataDir = path.join(__dirname, '../../data');
 if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
+  try { fs.mkdirSync(dataDir, { recursive: true }); } catch(e) {}
 }
 
 const dbPath = process.env.DB_PATH || path.join(dataDir, 'routeless.db');
@@ -15,4 +15,3 @@ db.exec('PRAGMA journal_mode = WAL;');
 db.exec('PRAGMA foreign_keys = ON;');
 
 module.exports = db;
-
