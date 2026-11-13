@@ -184,12 +184,17 @@
         localStorage.setItem('routeless_user', JSON.stringify(data.user));
         if (data.user.preferred_language) localStorage.setItem('routeless_lang', data.user.preferred_language);
         if (data.user.preferred_theme) localStorage.setItem('routeless_theme', data.user.preferred_theme);
+        localStorage.setItem('routeless_lang_chosen', '1');
 
-        // Redirect based on role
-        if (data.user.role === 'admin') {
-          window.location.href = '/admin';
+        // Redirect to originally requested page, or role-based default
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get('redirect');
+        if (redirect && redirect.startsWith('/') && !['/login','/register'].includes(redirect)) {
+          window.location.replace(redirect);
+        } else if (data.user.role === 'admin') {
+          window.location.replace('/admin');
         } else {
-          window.location.href = '/';
+          window.location.replace('/');
         }
       } else {
         alert.textContent = data.error || 'Sign in failed. Please try again.';

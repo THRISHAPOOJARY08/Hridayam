@@ -1250,8 +1250,31 @@
     });
   }
 
+  // ---- Protected Page Auth Guard ----
+  const PROTECTED_PATHS = ['/', '/find-transport', '/my-bookings', '/profile', '/student-pass', '/ai-chat', '/emergency', '/admin'];
+  const AUTH_PAGES = ['/login', '/register'];
+
+  function guardAuth() {
+    const path = window.location.pathname;
+    const token = localStorage.getItem('routeless_token');
+    const isProtected = PROTECTED_PATHS.some(p => path === p || path.startsWith(p + '?'));
+    const isAuthPage = AUTH_PAGES.includes(path);
+
+    if (isProtected && !token) {
+      window.location.replace('/login?redirect=' + encodeURIComponent(path));
+      return false;
+    }
+    if (isAuthPage && token) {
+      window.location.replace('/');
+      return false;
+    }
+    return true;
+  }
+
   // Startup Orchestrator
   document.addEventListener('DOMContentLoaded', () => {
+    if (!guardAuth()) return;
+
     initNavigation();
     initBookingOperations();
     syncPreferencesOnStartup();
@@ -1259,8 +1282,7 @@
 
     // First-time language selection
     const hasChosen = localStorage.getItem('routeless_lang_chosen');
-    const hasToken = localStorage.getItem('routeless_token');
-    const isAuthPage = ['/login', '/register'].includes(window.location.pathname);
+    const isAuthPage = AUTH_PAGES.includes(window.location.pathname);
 
     if (!hasChosen && !isAuthPage) {
       showLanguageSelectionScreen();
