@@ -1,0 +1,93 @@
+/* ROUTELESS: THE LAST MILE | KARNATAKA
+   Centralized Light, Dark & System Theme Stylesheet
+   Adapts all cards, headers, bottom bars, inputs, modals and borders smoothly. */
+
+:root {
+  --color-surface: #faf8ff;
+  --color-surface-dim: #d2d9f4;
+  --color-surface-bright: #faf8ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f2f3ff;
+  --color-surface-container: #eaedff;
+  --color-surface-container-high: #e2e7ff;
+  --color-surface-container-highest: #dae2fd;
+  --color-on-surface: #131b2e;
+  --color-on-surface-variant: #444651;
+  --color-outline: #757682;
+  --color-outline-variant: #c5c5d3;
+  --color-primary: #00236f;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #1e3a8a;
+  --color-on-primary-container: #90a8ff;
+  --color-secondary: #006a61;
+  --color-secondary-container: #86f2e4;
+  --color-border: rgba(68, 70, 81, 0.15);
+}
+
+html.dark {
+  --color-surface: #131b2e;
+  --color-surface-dim: #0f1626;
+  --color-surface-bright: #1c263e;
+  --color-surface-container-lowest: #182238;
+  --color-surface-container-low: #1e2a44;
+  --color-surface-container: #243250;
+  --color-surface-container-high: #2a3a5c;
+  --color-surface-container-highest: #33446b;
+  --color-on-surface: #eef0ff;
+  --color-on-surface-variant: #c5c5d3;
+  --color-outline: #8f909c;
+  --color-outline-variant: #3a435a;
+  --color-primary: #85a5ff;
+  --color-on-primary: #001e63;
+  --color-primary-container: #264191;
+  --color-on-primary-container: #dce1ff;
+  --color-secondary: #5fe3d5;
+  --color-secondary-container: #004d46;
+  --color-border: rgba(197, 197, 211, 0.18);
+}
+
+body {
+  background-color: var(--color-surface) !important;
+  color: var(--color-on-surface) !important;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.bg-surface { background-color: var(--color-surface) !important; }
+.bg-surface-container-lowest, .bg-white { background-color: var(--color-surface-container-lowest) !important; }
+.bg-surface-container-low { background-color: var(--color-surface-container-low) !important; }
+.bg-surface-container { background-color: var(--color-surface-container) !important; }
+.bg-surface-container-high { background-color: var(--color-surface-container-high) !important; }
+.bg-surface-container-highest { background-color: var(--color-surface-container-highest) !important; }
+
+.text-on-surface { color: var(--color-on-surface) !important; }
+.text-on-surface-variant { color: var(--color-on-surface-variant) !important; }
+.text-outline-variant { color: var(--color-outline) !important; }
+
+.border-outline-variant { border-color: var(--color-outline-variant) !important; }
+.border-outline-variant\/50, .border-outline-variant\/60, .border-outline-variant\/40 {
+  border-color: var(--color-border) !important;
+}
+
+header {
+  background-color: var(--color-surface-container-lowest) !important;
+  border-bottom: 1px solid var(--color-border);
+}
+
+nav .bg-surface-container-lowest, nav .bg-surface-container-low {
+  background-color: var(--color-surface-container-lowest) !important;
+  border-top: 1px solid var(--color-border);
+}
+
+input, select, textarea {
+  color: var(--color-on-surface) !important;
+}
+
+input::placeholder {
+  color: var(--color-on-surface-variant) !important;
+  opacity: 0.7;
+}
+
+html.dark .shadow-sm, html.dark .shadow-md, html.dark .shadow-lg, html.dark .shadow-xl, html.dark .shadow-2xl {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45) !important;
+}
+

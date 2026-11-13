@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "secondary-fixed": "#89f5e7", "on-secondary-fixed": "#00201d", "on-error-container": "#93000a", "on-secondary-fixed-variant": "#005049", "inverse-surface": "#283044", "secondary-container": "#86f2e4", "on-secondary": "#ffffff", "on-secondary-container": "#006f66", "tertiary-container": "#653400", "outline": "#757682", "background": "#faf8ff", "on-tertiary-fixed": "#2f1500", "error-container": "#ffdad6", "error": "#ba1a1a", "primary-fixed-dim": "#b6c4ff", "secondary": "#006a61", "on-tertiary": "#ffffff", "surface-variant": "#dae2fd", "inverse-on-surface": "#eef0ff", "on-surface-variant": "#444651", "surface-bright": "#faf8ff", "on-primary-fixed-variant": "#264191", "secondary-fixed-dim": "#6bd8cb", "on-primary-fixed": "#00164e", "outline-variant": "#c5c5d3", "surface-tint": "#4059aa", "tertiary": "#442100", "surface-container-low": "#f2f3ff", "primary-container": "#1e3a8a", "surface-container-lowest": "#ffffff", "surface-dim": "#d2d9f4", "on-primary-container": "#90a8ff", "surface-container": "#eaedff", "tertiary-fixed-dim": "#ffb77d", "tertiary-fixed": "#ffdcc3", "inverse-primary": "#b6c4ff", "primary": "#00236f", "surface-container-highest": "#dae2fd", "on-primary": "#ffffff", "on-error": "#ffffff", "surface-container-high": "#e2e7ff", "on-tertiary-fixed-variant": "#6e3900", "on-surface": "#131b2e", "on-background": "#131b2e", "on-tertiary-container": "#fc922b", "primary-fixed": "#dce1ff", "surface": "#faf8ff" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-xs": "0.25rem", "space-lg": "1rem", "space-md": "0.75rem", "margin-mobile": "1rem", "space-sm": "0.5rem", "margin": "1rem", "space-xl": "1.5rem", "gutter-mobile": "0.75rem", "gutter": "1rem" }, "fontFamily": { "headline-md": ["Plus Jakarta Sans"], "body-md-medium": ["Inter"], "body-md": ["Inter"], "label-sm": ["Inter"], "headline-lg-mobile": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "body-lg-medium": ["Inter"], "label-lg": ["Inter"], "label-md": ["Inter"], "headline-sm": ["Plus Jakarta Sans"], "body-lg": ["Inter"] }, "fontSize": { "headline-md": ["22px", { "lineHeight": "30px", "fontWeight": "600" }], "body-md-medium": ["14px", { "lineHeight": "20px", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }], "headline-lg-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "body-lg-medium": ["16px", { "lineHeight": "24px", "fontWeight": "500" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "headline-sm": ["18px", { "lineHeight": "26px", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } };</script><style>@layer base{html,body{width:100%;margin:0;padding:0;min-height:100%;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-background font-body-md text-on-surface antialiased flex flex-col min-h-screen"><header class="fixed top-0 inset-x-0 z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] pt-safe"><div class="h-20 px-margin-mobile flex flex-col justify-center gap-1"><div class="flex items-center justify-between"><div class="flex items-center gap-space-xs"><div class="flex items-center gap-1.5 bg-surface-container-low px-2 py-0.5 rounded-lg"><span class="material-symbols-outlined text-primary text-[18px]">directions_bus</span><span class="font-label-md text-label-md text-primary">ರೂಟ್‌ಲೆಸ್ಸ್ | ROUTELESS</span></div></div><div class="flex items-center gap-space-xs"><button aria-label="Change Language" class="min-h-[44px] px-2.5 py-1 rounded-full bg-surface-container flex items-center gap-1 text-on-surface hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-[16px] text-secondary">translate</span><span class="font-label-md text-label-md text-primary font-bold">ಕನ್ನಡ</span><span class="font-label-sm text-label-sm text-outline">/</span><span class="font-label-md text-label-md text-on-surface-variant">EN</span></button><button aria-label="Notifications" class="relative w-11 h-11 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-error ring-2 ring-surface"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div><div class="flex items-center justify-between"><button aria-label="Select Location" class="flex items-center gap-1 text-on-surface-variant hover:text-primary transition-colors py-0.5" type="button"><span class="material-symbols-outlined text-secondary text-[16px]">location_on</span><span class="font-label-md text-label-md font-semibold text-on-surface">ಹಾವೇರಿ / Haveri District</span><span class="material-symbols-outlined text-[16px] text-outline">expand_more</span></button><div class="font-label-sm text-label-sm text-secondary font-medium tracking-wide uppercase px-2 py-0.5 rounded-full bg-secondary-container/50 text-on-secondary-container">Karnataka RTC Link</div></div></div></header><main class="flex flex-col relative w-full pt-20 pb-28 bg-background min-h-screen"><div class="flex flex-col w-full px-margin-mobile pb-12 space-y-space-lg">
+<!-- 1. User Profile Header Section -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-md">
+<div class="relative">
+<div class="w-16 h-16 rounded-full overflow-hidden bg-surface-container-high flex items-center justify-center">
+<img class="w-full h-full object-cover" data-alt="Portrait photo of Sahana, a confident young female college student from Karnataka wearing a vibrant yellow kurti with neat hair against a warm bright rural library backdrop, natural sunny ambient lighting, crisp high quality mobile app profile photo." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKJhIufOKugqRNR3x5itn2oWJ-Qgxe593HlrKVRNP4sr3u84lvn3r7BpR90pgHwIKw0SWKfu6mxYdooRZo6ATcDMS4x870zrX_z7aQeRJ-oRq60UMN87yp3QAoDZ2eiwe21GFXwfhQgkug4BzrISd97EiLVqQkGTxkk27nT0yo6L-VT-XqzbVqSSu-Q3XRKjNQ9VndHi3oJ9i6weUFelJok6uA_k-qCd1ZQUE6pDfX"/>
+</div>
+<button aria-label="Edit Profile Photo" class="absolute -bottom-1 -right-1 w-7 h-7 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-md active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+</button>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5 flex-wrap">
+<h1 class="font-headline-sm text-headline-sm text-on-surface font-bold truncate">ಸಹನಾ ಗೌಡ</h1>
+<span class="font-body-md text-body-md text-outline">/ Sahana Gowda</span>
+</div>
+<div class="flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[16px] text-secondary">verified</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">ದೃಢೀಕೃತ ವಿದ್ಯಾರ್ಥಿ / Verified Student</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">+91 94812 34567</p>
+</div>
+</div>
+<button class="px-3 py-1.5 rounded-full bg-surface-container text-primary font-label-md text-label-md flex items-center gap-1 active:bg-surface-container-high transition-colors shrink-0" type="button">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+<span>ತಿದ್ದುಪಡಿ</span>
+</button>
+</div>
+<!-- Student Civic Identity Meta -->
+<div class="bg-surface-container-low rounded-lg p-3 space-y-2">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px] mt-0.5 shrink-0">home_pin</span>
+<div class="flex flex-col leading-tight">
+<span class="font-label-sm text-label-sm text-on-surface-variant">ಗ್ರಾಮ / Native Village</span>
+<span class="font-body-md-medium text-body-md-medium text-on-surface">ಬ್ಯಾಡಗಿ ಗ್ರಾಮೀಣ, ಹಾವೇರಿ ಜಿಲ್ಲೆ (Byadgi Rural, Haveri Dist)</span>
+</div>
+</div>
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-primary text-[18px] mt-0.5 shrink-0">school</span>
+<div class="flex flex-col leading-tight">
+<span class="font-label-sm text-label-sm text-on-surface-variant">ಕಾಲೇಜು / Institution</span>
+<span class="font-body-md-medium text-body-md-medium text-on-surface">ಸರ್ಕಾರಿ ಪ್ರಥಮ ದರ್ಜೆ ಕಾಲೇಜು, ಹಾವೇರಿ (Govt First Grade College, Haveri)</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="font-label-sm text-label-sm bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-md font-semibold">KSRTC ಪಾಸು ಸಂಖ್ಯೆ: KST-84920-HVR</span>
+<span class="font-label-sm text-label-sm text-secondary font-bold">ಮಾನ್ಯತೆ: 2025</span>
+</div>
+</div>
+</section>
+<!-- 2. Language Preferences -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">translate</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">ಭಾಷಾ ಆಯ್ಕೆ</h2>
+<p class="font-label-sm text-label-sm text-outline">Language Preferences</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm bg-primary-fixed text-on-primary-fixed px-2.5 py-0.5 rounded-full font-bold">ಕನ್ನಡ ಸಕ್ರಿಯ</span>
+</div>
+<!-- Language Selector Grid -->
+<div class="grid grid-cols-2 gap-space-sm" id="language-grid">
+<!-- Kannada (Active) -->
+<button class="lang-btn active p-3 rounded-lg flex items-center justify-between bg-primary-container text-on-primary shadow-sm text-left transition-all" data-lang="kn" type="button">
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-bold leading-tight">ಕನ್ನಡ</span>
+<span class="font-label-sm text-label-sm text-on-primary-container leading-none mt-0.5">Kannada</span>
+</div>
+<span class="material-symbols-outlined text-secondary-fixed text-[22px]">check_circle</span>
+</button>
+<!-- English -->
+<button class="lang-btn p-3 rounded-lg flex items-center justify-between bg-surface-container text-on-surface hover:bg-surface-container-high active:scale-[0.98] text-left transition-all" data-lang="en" type="button">
+<div class="flex flex-col">
+<span class="font-body-lg-medium text-body-lg-medium font-bold leading-tight">English</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant leading-none mt-0.5">ಇಂಗ್ಲಿಷ್</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-[20px] check-icon hidden">check_circle</span>
+</button>
+<!-- Hindi -->
+<button class="lang-btn p-3 rounded-lg flex items-center justify-between bg-surface-container text-on-surface hover:bg-surface-container-high active:scale-[0.98] text-left transition-all" data-lang="hi" type="button">
+<div class="flex flex-col">
+<span class="font-body-lg-medium text-body-lg-medium font-bold leading-tight">हिंदी</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant leading-none mt-0.5">Hindi</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-[20px] check-icon hidden">check_circle</span>
+</button>
+<!-- Telugu -->
+<button class="lang-btn p-3 rounded-lg flex items-center justify-between bg-surface-container text-on-surface hover:bg-surface-container-high active:scale-[0.98] text-left transition-all" data-lang="te" type="button">
+<div class="flex flex-col">
+<span class="font-body-lg-medium text-body-lg-medium font-bold leading-tight">తెలుగు</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant leading-none mt-0.5">Telugu</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-[20px] check-icon hidden">check_circle</span>
+</button>
+<!-- Tamil -->
+<button class="lang-btn p-3 rounded-lg flex items-center justify-between bg-surface-container text-on-surface hover:bg-surface-container-high active:scale-[0.98] text-left transition-all" data-lang="ta" type="button">
+<div class="flex flex-col">
+<span class="font-body-lg-medium text-body-lg-medium font-bold leading-tight">தமிழ்</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant leading-none mt-0.5">Tamil</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-[20px] check-icon hidden">check_circle</span>
+</button>
+<!-- Malayalam -->
+<button class="lang-btn p-3 rounded-lg flex items-center justify-between bg-surface-container text-on-surface hover:bg-surface-container-high active:scale-[0.98] text-left transition-all" data-lang="ml" type="button">
+<div class="flex flex-col">
+<span class="font-body-lg-medium text-body-lg-medium font-bold leading-tight">മലയാളം</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant leading-none mt-0.5">Malayalam</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-[20px] check-icon hidden">check_circle</span>
+</button>
+</div>
+<div class="flex items-center gap-2 p-2.5 rounded-lg bg-surface-container-low text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-secondary shrink-0">info</span>
+<p class="font-label-sm text-label-sm leading-tight">ಆಯ್ಕೆ ಮಾಡಿದ ಭಾಷೆಯು ಸಂಪೂರ್ಣ ಆ್ಯಪ್‌ನಲ್ಲಿ ಅನ್ವಯಿಸುತ್ತದೆ. / Selected language applies across the entire app.</p>
+</div>
+</section>
+<!-- 3. Appearance & Theme -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">palette</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">ವಿನ್ಯಾಸ ಮೋಡ್</h2>
+<p class="font-label-sm text-label-sm text-outline">Theme &amp; Outdoor Glare Settings</p>
+</div>
+</div>
+<!-- Segmented 3-option card switcher -->
+<div class="grid grid-cols-3 gap-2 bg-surface-container-low p-1.5 rounded-xl" id="theme-group">
+<!-- Light Mode (Active) -->
+<button class="theme-btn active flex flex-col items-center justify-center py-2.5 px-1 rounded-lg bg-surface-container-lowest text-primary shadow-sm transition-all" data-theme="light" type="button">
+<span class="material-symbols-outlined text-[24px] text-tertiary-container">light_mode</span>
+<span class="font-label-md text-label-md font-bold mt-1">ತಿಳಿ ಮೋಡ್</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Light</span>
+</button>
+<!-- Dark Mode -->
+<button class="theme-btn flex flex-col items-center justify-center py-2.5 px-1 rounded-lg text-on-surface-variant hover:text-on-surface transition-all" data-theme="dark" type="button">
+<span class="material-symbols-outlined text-[24px]">dark_mode</span>
+<span class="font-label-md text-label-md font-semibold mt-1">ಕಪ್ಪು ಮೋಡ್</span>
+<span class="font-label-sm text-label-sm text-outline">Dark</span>
+</button>
+<!-- System Default -->
+<button class="theme-btn flex flex-col items-center justify-center py-2.5 px-1 rounded-lg text-on-surface-variant hover:text-on-surface transition-all" data-theme="system" type="button">
+<span class="material-symbols-outlined text-[24px]">settings_brightness</span>
+<span class="font-label-md text-label-md font-semibold mt-1">ಸ್ವಯಂಚಾಲಿತ</span>
+<span class="font-label-sm text-label-sm text-outline">Auto</span>
+</button>
+</div>
+</section>
+<!-- 4. Travel & Accessibility Settings -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">accessibility_new</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">ಪ್ರಯಾಣ ಹಾಗೂ ಸೌಲಭ್ಯಗಳು</h2>
+<p class="font-label-sm text-label-sm text-outline">Travel &amp; Commuter Accessibility</p>
+</div>
+</div>
+<div class="space-y-space-sm">
+<!-- Toggle 1: Voice Guidance -->
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-low min-h-[56px]">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container shrink-0">
+<span class="material-symbols-outlined text-[20px]">record_voice_over</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md-medium text-body-md-medium text-on-surface">ಧ್ವನಿ ಮಾರ್ಗದರ್ಶನ (ಕನ್ನಡ)</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Voice announcements for approaching bus stops</span>
+</div>
+</div>
+<button aria-checked="true" class="toggle-switch relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full bg-primary p-0.5 transition-colors duration-200 ease-in-out" role="switch" type="button">
+<span class="pointer-events-none inline-block h-6 w-6 transform rounded-full bg-surface-container-lowest shadow-md transition duration-200 ease-in-out translate-x-5"></span>
+</button>
+</div>
+<!-- Toggle 2: Large Text -->
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-low min-h-[56px]">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant shrink-0">
+<span class="material-symbols-outlined text-[20px]">text_fields</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md-medium text-body-md-medium text-on-surface">ದೊಡ್ಡ ಅಕ್ಷರಗಳು / Large Text</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">High-visibility typography for sunlight reading</span>
+</div>
+</div>
+<button aria-checked="false" class="toggle-switch relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full bg-surface-container-highest p-0.5 transition-colors duration-200 ease-in-out" role="switch" type="button">
+<span class="pointer-events-none inline-block h-6 w-6 transform rounded-full bg-surface-container-lowest shadow-md transition duration-200 ease-in-out translate-x-0"></span>
+</button>
+</div>
+<!-- Toggle 3: SMS Alerts -->
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-low min-h-[56px]">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed-variant shrink-0">
+<span class="material-symbols-outlined text-[20px]">sms</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md-medium text-body-md-medium text-on-surface">ಬಸ್ ಆಗಮನ SMS ಎಚ್ಚರಿಕೆ</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Auto SMS updates for guardians without smartphone app</span>
+</div>
+</div>
+<button aria-checked="true" class="toggle-switch relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full bg-primary p-0.5 transition-colors duration-200 ease-in-out" role="switch" type="button">
+<span class="pointer-events-none inline-block h-6 w-6 transform rounded-full bg-surface-container-lowest shadow-md transition duration-200 ease-in-out translate-x-5"></span>
+</button>
+</div>
+<!-- Action: Offline Timetable Download -->
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-low min-h-[56px]">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed shrink-0">
+<span class="material-symbols-outlined text-[20px]">cloud_download</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-body-md-medium text-body-md-medium text-on-surface">ಆಫ್‌ಲೈನ್ ವೇಳಾಪಟ್ಟಿ</span>
+<span class="font-label-sm text-label-sm bg-secondary-container text-on-secondary-container px-1.5 py-0.2 rounded font-bold">1.2 MB Cached</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Works without internet in Byadgi/Haveri rural routes</span>
+</div>
+</div>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-high text-primary font-label-md text-label-md flex items-center gap-1 hover:bg-surface-container-highest active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[16px]">sync</span>
+<span>ನವೀಕರಿಸಿ</span>
+</button>
+</div>
+</div>
+</section>
+<!-- 5. Safety & Support -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">shield</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">ಸುರಕ್ಷತೆ ಮತ್ತು ಬೆಂಬಲ</h2>
+<p class="font-label-sm text-label-sm text-outline">Safety, Guardian Link &amp; Legal</p>
+</div>
+</div>
+<div class="space-y-space-sm">
+<!-- KSRTC Helpline -->
+<a class="flex items-center justify-between p-3.5 rounded-xl bg-error-container/40 text-on-error-container hover:bg-error-container/60 active:scale-[0.99] transition-all min-h-[56px]" href="tel:18004252424">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-error text-on-error flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px]">emergency</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md-medium text-body-md-medium font-bold text-on-error-container">ತುರ್ತು ಸಹಾಯವಾಣಿ / KSRTC Helpline</span>
+<span class="font-headline-sm text-headline-sm font-bold text-error tracking-wide">1800-425-2424</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-error text-[22px]">call</span>
+</a>
+<!-- Guardian Alert -->
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-low min-h-[52px]">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-surface-container-high flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-[20px]">family_restroom</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md-medium text-body-md-medium text-on-surface">ಪೋಷಕರ ಎಚ್ಚರಿಕೆ ಸಂಖ್ಯೆ / Guardian Alert</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-mono">+91 98450 12345 (ತಂದೆ / Father)</span>
+</div>
+</div>
+<button aria-label="Change Guardian Contact" class="p-2 text-on-surface-variant hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+</div>
+<!-- Privacy & Student Safety -->
+<a class="flex items-center justify-between p-3 rounded-lg bg-surface-container-low text-on-surface hover:bg-surface-container min-h-[52px] transition-colors" href="#">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-surface-container-high flex items-center justify-center text-outline shrink-0">
+<span class="material-symbols-outlined text-[20px]">policy</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md-medium text-body-md-medium text-on-surface">ಗೌಪ್ಯತೆ ನೀತಿ / Privacy &amp; Student Safety</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Zero-tracking offline student identity protection</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-[20px]">chevron_right</span>
+</a>
+<!-- Logout Action Button -->
+<div class="pt-2">
+<button class="w-full h-13 min-h-[52px] rounded-xl bg-surface-container text-error font-headline-sm text-headline-sm font-semibold flex items-center justify-center gap-2 hover:bg-error-container/30 active:scale-[0.99] transition-all" type="button">
+<span class="material-symbols-outlined text-[22px]">logout</span>
+<span>ಲಾಗ್ ಔಟ್ / Logout</span>
+</button>
+</div>
+<!-- App version & Build -->
+<div class="text-center pt-2">
+<p class="font-label-sm text-label-sm text-outline">ರೂಟ್‌ಲೆಸ್ಸ್ ಕರ್ನಾಟಕ (ROUTELESS Karnataka) v2.4.1 (Build 118)</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant/60">ಹಾವೇರಿ ವಿಭಾಗ • ಕರ್ನಾಟಕ ರಾಜ್ಯ ರಸ್ತೆ ಸಾರಿಗೆ ನಿಗಮ ಅಧಿಕೃತ ಸಹಭಾಗಿತ್ವ</p>
+</div>
+</div>
+</section>
+</div>
+<script>
+  (function() {
+    // Language Selection Interaction
+    const langButtons = document.querySelectorAll('.lang-btn');
+    langButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        langButtons.forEach(b => {
+          b.classList.remove('bg-primary-container', 'text-on-primary', 'active', 'shadow-sm');
+          b.classList.add('bg-surface-container', 'text-on-surface');
+          const check = b.querySelector('.material-symbols-outlined');
+          if (check) {
+            check.className = 'material-symbols-outlined text-outline-variant text-[20px] check-icon hidden';
+            check.textContent = 'check_circle';
+          }
+        });
+        btn.classList.remove('bg-surface-container', 'text-on-surface');
+        btn.classList.add('bg-primary-container', 'text-on-primary', 'active', 'shadow-sm');
+        const activeCheck = btn.querySelector('.material-symbols-outlined');
+        if (activeCheck) {
+          activeCheck.className = 'material-symbols-outlined text-secondary-fixed text-[22px]';
+          activeCheck.classList.remove('hidden');
+        }
+      });
+    });
+
+    // Theme Switcher Interaction
+    const themeButtons = document.querySelectorAll('.theme-btn');
+    themeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        themeButtons.forEach(b => {
+          b.classList.remove('bg-surface-container-lowest', 'text-primary', 'shadow-sm', 'active');
+          b.classList.add('text-on-surface-variant');
+        });
+        btn.classList.add('bg-surface-container-lowest', 'text-primary', 'shadow-sm', 'active');
+        btn.classList.remove('text-on-surface-variant');
+      });
+    });
+
+    // Accessible Toggle Switches
+    const toggles = document.querySelectorAll('.toggle-switch');
+    toggles.forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const isChecked = toggle.getAttribute('aria-checked') === 'true';
+        const newChecked = !isChecked;
+        toggle.setAttribute('aria-checked', String(newChecked));
+        const handle = toggle.querySelector('span');
+
+        if (newChecked) {
+          toggle.classList.remove('bg-surface-container-highest');
+          toggle.classList.add('bg-primary');
+          handle.classList.remove('translate-x-0');
+          handle.classList.add('translate-x-5');
+        } else {
+          toggle.classList.remove('bg-primary');
+          toggle.classList.add('bg-surface-container-highest');
+          handle.classList.remove('translate-x-5');
+          handle.classList.add('translate-x-0');
+        }
+      });
+    });
+  })();
+</script></main><aside class="fixed right-margin-mobile bottom-24 z-40 pb-safe"><button aria-label="Multilingual AI Voice and Chat Assistant" class="flex items-center gap-2 px-4 h-12 rounded-full bg-primary text-on-primary shadow-[0_4px_12px_rgba(0,35,111,0.25)] hover:bg-primary-container active:scale-95 transition-all select-none" type="button"><span class="material-symbols-outlined text-[20px] text-secondary-fixed">spark</span><div class="flex flex-col text-left"><span class="font-label-sm text-[11px] leading-tight font-semibold text-secondary-fixed">AI ಸಹಾಯಕ</span><span class="font-label-md text-label-md leading-tight text-on-primary">AI Assistant</span></div><span class="material-symbols-outlined text-[18px] text-on-primary-container ml-0.5">mic</span></button></aside><nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-2px_10px_rgba(0,0,0,0.04)]" data-active-classes="text-primary font-bold"><div class="flex justify-around items-center h-16 px-space-xs"><a class="flex flex-col items-center justify-center gap-0.5 min-w-[64px] min-h-[48px] text-on-surface-variant hover:text-primary transition-colors" data-path="home" href="#"><span class="material-symbols-outlined text-[22px]">home</span><div class="flex flex-col items-center leading-none"><span class="font-label-sm text-[10px] leading-3">ಮನೆ</span><span class="font-label-sm text-label-sm leading-3">Home</span></div></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[64px] min-h-[48px] text-on-surface-variant hover:text-primary transition-colors" data-path="find-transport" href="#"><span class="material-symbols-outlined text-[22px]">directions_bus</span><div class="flex flex-col items-center leading-none"><span class="font-label-sm text-[10px] leading-3">ಹುಡುಕಿ</span><span class="font-label-sm text-label-sm leading-3">Find</span></div></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[64px] min-h-[48px] text-on-surface-variant hover:text-primary transition-colors relative" data-path="my-bookings" href="#"><div class="relative flex items-center justify-center"><span class="material-symbols-outlined text-[22px]">confirmation_number</span><span class="absolute -top-1 -right-2 px-1.5 py-0.2 rounded-full bg-primary-container text-on-primary text-[10px] font-bold min-w-[16px] text-center leading-tight">2</span></div><div class="flex flex-col items-center leading-none"><span class="font-label-sm text-[10px] leading-3">ಬುಕಿಂಗ್</span><span class="font-label-sm text-label-sm leading-3">Bookings</span></div></a><a aria-current="page" class="flex flex-col items-center justify-center gap-0.5 min-w-[64px] min-h-[48px] transition-colors text-primary font-bold" data-path="profile" href="#"><span class="material-symbols-outlined text-[22px]">account_circle</span><div class="flex flex-col items-center leading-none"><span class="font-label-sm text-[10px] leading-3">ಪ್ರೊಫೈಲ್</span><span class="font-label-sm text-label-sm leading-3">Profile</span></div></a></div></nav></body></html>

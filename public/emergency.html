@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Emergency Control Center — Routeless Karnataka</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/public/css/routeless-theme.css"/>
+<style>
+  body { font-family:'Inter',sans-serif; }
+  .stat-card { background:var(--color-surface-container-lowest); border:1px solid var(--color-outline-variant); border-radius:0.875rem; padding:1rem; }
+  .stat-num { font-size:1.75rem; font-weight:700; line-height:1; }
+  .stat-label { font-size:0.75rem; color:var(--color-on-surface-variant); margin-top:0.2rem; }
+  .emergency-banner { background:linear-gradient(135deg, #ba1a1a, #9b0000); color:white; border-radius:1rem; padding:1rem; }
+  .sim-banner { background:linear-gradient(135deg, #e65100, #bf360c); color:white; border-radius:1rem; padding:1rem; }
+  .btn-danger { background:#ba1a1a; color:white; }
+  .btn-danger:hover { background:#9b0000; }
+  .btn-warning { background:#e65100; color:white; }
+  .student-row { display:flex; align-items:center; gap:0.75rem; padding:0.75rem; border-radius:0.75rem; border:1px solid var(--color-outline-variant); background:var(--color-surface-container-low); margin-bottom:0.5rem; }
+  .priority-badge { font-size:0.7rem; font-weight:700; padding:0.2rem 0.5rem; border-radius:999px; }
+  .priority-exam { background:#ffdad6; color:#93000a; }
+  .priority-normal { background:var(--color-surface-container-high); color:var(--color-on-surface-variant); }
+  .alloc-allocated { background:#d4edda; color:#155724; }
+  .alloc-pending { background:#fff3cd; color:#856404; }
+  .road-block { background:#ffdad6; border:1.5px solid #ffb4ab; border-radius:0.75rem; padding:0.75rem; display:flex; align-items:center; gap:0.75rem; }
+  .section-title { font-size:0.9rem; font-weight:700; color:var(--color-on-surface); margin:1rem 0 0.5rem; }
+</style>
+</head>
+<body style="background:var(--color-surface); color:var(--color-on-surface); min-height:100vh; padding-bottom:5rem;">
+
+<!-- Header -->
+<header style="background:var(--color-surface-container-lowest); border-bottom:1px solid var(--color-border); padding:0.75rem 1rem; display:flex; align-items:center; gap:0.75rem; position:sticky; top:0; z-index:40;">
+  <button onclick="window.history.back()" style="background:none; border:none; cursor:pointer; padding:0.25rem; color:var(--color-on-surface-variant);">
+    <span class="material-symbols-outlined">arrow_back</span>
+  </button>
+  <div>
+    <h1 style="font-size:1rem; font-weight:700; margin:0; color:var(--color-on-surface);">Emergency Control Center</h1>
+    <p style="font-size:0.72rem; color:var(--color-on-surface-variant); margin:0;" id="status-label">Loading...</p>
+  </div>
+  <button onclick="loadStatus()" title="Refresh" style="margin-left:auto; background:none; border:none; cursor:pointer; color:var(--color-on-surface-variant);">
+    <span class="material-symbols-outlined">refresh</span>
+  </button>
+</header>
+
+<main style="padding:1rem; max-width:600px; margin:0 auto;">
+
+  <!-- Loading state -->
+  <div id="loading-state" style="text-align:center; padding:3rem 1rem; color:var(--color-on-surface-variant);">
+    <span class="material-symbols-outlined" style="font-size:2.5rem; display:block; animation:spin 1s linear infinite; margin-bottom:0.5rem;">refresh</span>
+    Loading emergency status...
+  </div>
+
+  <!-- No active emergency -->
+  <div id="no-emergency" style="display:none;">
+    <div style="background:var(--color-surface-container); border-radius:1rem; padding:1.5rem; text-align:center; margin-bottom:1rem;">
+      <span class="material-symbols-outlined" style="font-size:3rem; color:var(--color-secondary); display:block; margin-bottom:0.75rem;">check_circle</span>
+      <h2 style="font-size:1.1rem; font-weight:700; margin:0 0 0.4rem; color:var(--color-on-surface);">All Systems Normal</h2>
+      <p style="font-size:0.85rem; color:var(--color-on-surface-variant);">No active emergency. All routes operational.</p>
+    </div>
+
+    <div style="background:var(--color-surface-container-lowest); border:1px solid var(--color-outline-variant); border-radius:1rem; padding:1.25rem;">
+      <h3 style="font-size:0.9rem; font-weight:700; margin:0 0 0.5rem; color:var(--color-on-surface);">⚠️ Exam-Day Emergency Simulation</h3>
+      <p style="font-size:0.8rem; color:var(--color-on-surface-variant); margin-bottom:1rem;">Test the system with a simulated scenario: 2 buses unavailable, 40% demand increase, flooded road, students with exams in 2 hours.</p>
+      <button onclick="startSimulation()" style="width:100%; padding:0.875rem; border-radius:0.75rem; background:#e65100; color:white; font-weight:700; font-size:0.9rem; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem;">
+        <span class="material-symbols-outlined">warning</span>
+        Simulate Exam-Day Emergency
+      </button>
+      <p style="font-size:0.72rem; color:var(--color-on-surface-variant); text-align:center; margin-top:0.5rem;">This creates a demo scenario and does not affect real data.</p>
+    </div>
+  </div>
+
+  <!-- Active emergency -->
+  <div id="active-emergency" style="display:none;">
+
+    <!-- Emergency banner -->
+    <div class="emergency-banner sim-banner" id="emergency-banner" style="margin-bottom:1rem;">
+      <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
+        <span class="material-symbols-outlined" style="animation:pulse 1s infinite;">warning</span>
+        <span style="font-weight:700; font-size:0.9rem;" id="scenario-title"></span>
+      </div>
+      <p style="font-size:0.8rem; opacity:0.9;" id="scenario-desc"></p>
+      <div style="font-size:0.72rem; opacity:0.75; margin-top:0.4rem;" id="scenario-time"></div>
+    </div>
+
+    <!-- Summary stats -->
+    <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:0.75rem; margin-bottom:1rem;">
+      <div class="stat-card">
+        <div class="stat-num" id="stat-unavailable" style="color:#ba1a1a;">0</div>
+        <div class="stat-label">Buses Unavailable</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-demand" style="color:#e65100;">+40%</div>
+        <div class="stat-label">Demand Increase</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-exam" style="color:var(--color-primary);">0</div>
+        <div class="stat-label">Students with Exams</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-allocated" style="color:#2e7d32;">0</div>
+        <div class="stat-label">Students Allocated</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-waiting" style="color:#e65100;">0</div>
+        <div class="stat-label">Students Waiting</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-capacity" style="color:var(--color-secondary);">0</div>
+        <div class="stat-label">Available Capacity</div>
+      </div>
+    </div>
+
+    <!-- Road blockages -->
+    <div class="section-title">🚧 Road Blockages</div>
+    <div id="blockages-list">
+      <div style="font-size:0.8rem; color:var(--color-on-surface-variant); padding:0.75rem;">Loading...</div>
+    </div>
+
+    <!-- Action buttons -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin:1rem 0;">
+      <button onclick="runAllocation()" style="padding:0.875rem; border-radius:0.75rem; background:var(--color-primary); color:var(--color-on-primary); font-weight:700; font-size:0.85rem; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem;">
+        <span class="material-symbols-outlined" style="font-size:1.1rem;">schedule_send</span> Run Allocation
+      </button>
+      <button onclick="resetSimulation()" style="padding:0.875rem; border-radius:0.75rem; background:var(--color-surface-container); color:var(--color-on-surface); font-weight:700; font-size:0.85rem; border:1px solid var(--color-outline-variant); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem;">
+        <span class="material-symbols-outlined" style="font-size:1.1rem;">restore</span> Reset
+      </button>
+    </div>
+
+    <!-- Student allocations -->
+    <div class="section-title">👩‍🎓 Student Allocations</div>
+    <div id="allocations-list">
+      <div style="font-size:0.8rem; color:var(--color-on-surface-variant); padding:0.75rem;">Loading...</div>
+    </div>
+
+    <!-- Before/After comparison -->
+    <div class="section-title">📊 Before vs After Allocation</div>
+    <div id="comparison-panel" style="background:var(--color-surface-container-lowest); border:1px solid var(--color-outline-variant); border-radius:1rem; padding:1rem;">
+      <p style="font-size:0.8rem; color:var(--color-on-surface-variant);">Run allocation to see comparison.</p>
+    </div>
+  </div>
+
+</main>
+
+<style>
+  @keyframes spin { to { transform:rotate(360deg); } }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+</style>
+
+<script>
+  let currentScenario = null;
+
+  async function loadStatus() {
+    document.getElementById('loading-state').style.display = 'block';
+    document.getElementById('no-emergency').style.display = 'none';
+    document.getElementById('active-emergency').style.display = 'none';
+
+    const token = localStorage.getItem('routeless_token');
+
+    try {
+      const res = await fetch('/api/emergency/status', {
+        headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+      });
+      const data = await res.json();
+
+      document.getElementById('loading-state').style.display = 'none';
+
+      if (!data.active) {
+        document.getElementById('no-emergency').style.display = 'block';
+        document.getElementById('status-label').textContent = 'No active emergency';
+      } else {
+        currentScenario = data;
+        document.getElementById('active-emergency').style.display = 'block';
+        document.getElementById('status-label').textContent = data.scenario.is_simulation ? '⚠️ SIMULATION ACTIVE' : '🚨 EMERGENCY ACTIVE';
+        renderEmergency(data);
+      }
+    } catch (err) {
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('no-emergency').style.display = 'block';
+      showToastLocal('Could not load emergency status.');
+    }
+  }
+
+  function renderEmergency(data) {
+    const s = data.scenario;
+    document.getElementById('scenario-title').textContent = s.title;
+    document.getElementById('scenario-desc').textContent = s.description;
+    document.getElementById('scenario-time').textContent = `Activated: ${new Date(s.activated_at).toLocaleString('en-IN')}`;
+
+    const sum = data.summary;
+    document.getElementById('stat-unavailable').textContent = sum.unavailable_buses;
+    document.getElementById('stat-demand').textContent = '+' + s.demand_increase_percent + '%';
+    document.getElementById('stat-exam').textContent = sum.students_with_exams;
+    document.getElementById('stat-allocated').textContent = sum.students_allocated;
+    document.getElementById('stat-waiting').textContent = sum.students_waiting;
+    document.getElementById('stat-capacity').textContent = sum.total_available_capacity;
+
+    // Road blockages
+    const blEl = document.getElementById('blockages-list');
+    if (data.road_blockages && data.road_blockages.length > 0) {
+      blEl.innerHTML = data.road_blockages.map(b => `
+        <div class="road-block">
+          <span class="material-symbols-outlined" style="color:#93000a;">block</span>
+          <div>
+            <div style="font-weight:700; font-size:0.85rem; color:#93000a;">${b.road_name}</div>
+            <div style="font-size:0.78rem; color:var(--color-on-surface-variant);">${b.from_location} → ${b.to_location} (${b.reason})</div>
+          </div>
+        </div>
+      `).join('');
+    } else {
+      blEl.innerHTML = '<div style="font-size:0.8rem; color:var(--color-on-surface-variant); padding:0.5rem;">No road blockages reported.</div>';
+    }
+
+    // Allocations
+    const alEl = document.getElementById('allocations-list');
+    if (data.allocations && data.allocations.length > 0) {
+      alEl.innerHTML = data.allocations.map(a => `
+        <div class="student-row">
+          <div style="font-size:1.5rem;">${a.has_exam ? '📝' : '👨‍🎓'}</div>
+          <div style="flex:1; min-width:0;">
+            <div style="font-weight:600; font-size:0.85rem; truncate;">${a.full_name}</div>
+            <div style="font-size:0.75rem; color:var(--color-on-surface-variant);">${a.village || '—'} ${a.exam_time ? '• Exam: ' + a.exam_time : ''}</div>
+            ${a.notes ? `<div style="font-size:0.72rem; color:var(--color-on-surface-variant); margin-top:0.1rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${a.notes}</div>` : ''}
+          </div>
+          <div>
+            ${a.has_exam ? '<span class="priority-badge priority-exam">EXAM</span>' : ''}
+            <div style="font-size:0.65rem; margin-top:0.2rem; text-align:right;">
+              <span class="priority-badge ${a.allocation_status === 'allocated' ? 'alloc-allocated' : 'alloc-pending'}">${a.allocation_status}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    } else {
+      alEl.innerHTML = '<div style="font-size:0.8rem; color:var(--color-on-surface-variant); padding:0.5rem;">No allocations yet. Run allocation to assign students to available vehicles.</div>';
+    }
+  }
+
+  async function startSimulation() {
+    const token = localStorage.getItem('routeless_token');
+    if (!token) {
+      window.location.href = '/login?redirect=/emergency';
+      return;
+    }
+
+    const btn = event.target.closest('button');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined" style="animation:spin 1s linear infinite;">refresh</span> Starting...';
+
+    try {
+      const res = await fetch('/api/emergency/simulate', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToastLocal('[SIMULATION] Emergency activated!');
+        setTimeout(loadStatus, 500);
+      } else {
+        showToastLocal(data.error || 'Failed to start simulation.');
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-symbols-outlined">warning</span> Simulate Exam-Day Emergency';
+      }
+    } catch (err) {
+      showToastLocal('Network error.');
+      btn.disabled = false;
+    }
+  }
+
+  async function runAllocation() {
+    const token = localStorage.getItem('routeless_token');
+    if (!token) return;
+
+    showToastLocal('Running allocation algorithm...');
+
+    try {
+      const res = await fetch('/api/emergency/allocate', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToastLocal(`Allocation done: ${data.summary.allocated} allocated, ${data.summary.waiting} waiting.`);
+
+        // Update comparison panel
+        const panel = document.getElementById('comparison-panel');
+        panel.innerHTML = `
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+            <div>
+              <div style="font-size:0.75rem; color:var(--color-on-surface-variant); margin-bottom:0.4rem; font-weight:600;">BEFORE EMERGENCY</div>
+              <div style="font-size:1.5rem; font-weight:700; color:#2e7d32;">${(data.summary.allocated + data.summary.waiting)}</div>
+              <div style="font-size:0.75rem; color:var(--color-on-surface-variant);">Students needed transport</div>
+            </div>
+            <div>
+              <div style="font-size:0.75rem; color:var(--color-on-surface-variant); margin-bottom:0.4rem; font-weight:600;">AFTER ALLOCATION</div>
+              <div style="font-size:1.5rem; font-weight:700; color:var(--color-primary);">${data.summary.allocated}</div>
+              <div style="font-size:0.75rem; color:var(--color-on-surface-variant);">Successfully allocated</div>
+            </div>
+          </div>
+          <div style="margin-top:0.75rem; padding-top:0.75rem; border-top:1px solid var(--color-outline-variant);">
+            <div style="font-size:0.8rem; color:var(--color-on-surface);">
+              ✅ Exam students allocated: <strong>${data.summary.exam_students_allocated}</strong><br>
+              ⏳ Exam students waiting: <strong style="color:${data.summary.exam_students_waiting > 0 ? '#ba1a1a' : '#2e7d32'};">${data.summary.exam_students_waiting}</strong><br>
+              🚌 Regular students waiting: <strong>${data.summary.waiting - data.summary.exam_students_waiting}</strong>
+            </div>
+          </div>
+          <div style="margin-top:0.75rem; font-size:0.75rem; color:var(--color-on-surface-variant); background:var(--color-surface-container); padding:0.5rem; border-radius:0.5rem;">
+            💡 Priority rules applied: (1) Students with exams in 2 hrs, (2) Earliest exam time, (3) Longest travel time, (4) No alternative transport.
+          </div>
+        `;
+
+        setTimeout(loadStatus, 500);
+      } else {
+        showToastLocal(data.error || 'Allocation failed.');
+      }
+    } catch (err) {
+      showToastLocal('Network error.');
+    }
+  }
+
+  async function resetSimulation() {
+    const token = localStorage.getItem('routeless_token');
+    if (!token) return;
+    if (!confirm('Reset simulation and restore normal operations?')) return;
+
+    try {
+      const res = await fetch('/api/emergency/reset', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToastLocal('Simulation reset successfully.');
+        setTimeout(loadStatus, 500);
+      }
+    } catch (err) {
+      showToastLocal('Reset failed.');
+    }
+  }
+
+  function showToastLocal(msg) {
+    const old = document.querySelector('.routeless-toast');
+    if (old) old.remove();
+    const toast = document.createElement('div');
+    toast.className = 'routeless-toast';
+    toast.style.cssText = 'position:fixed;top:4rem;left:50%;transform:translateX(-50%);z-index:999;padding:0.6rem 1.2rem;border-radius:999px;background:var(--color-primary);color:var(--color-on-primary);font-size:0.8rem;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,0.3);max-width:85%;text-align:center;';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  document.addEventListener('DOMContentLoaded', loadStatus);
+</script>
+<script src="/public/js/routeless-karnataka.js"></script>
+</body>
+</html>

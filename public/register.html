@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Register — Routeless Karnataka</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/public/css/routeless-theme.css"/>
+<style>
+  body { font-family: 'Inter', sans-serif; }
+  .input-field { width:100%; padding:0.75rem 1rem; border-radius:0.75rem; border:1.5px solid var(--color-outline-variant); background:var(--color-surface-container-low); color:var(--color-on-surface); outline:none; font-size:0.875rem; transition:border-color 0.2s; box-sizing:border-box; }
+  .input-field:focus { border-color: var(--color-primary); }
+  select.input-field { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%23757682' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position: right 12px center; }
+  .btn-primary { width:100%; padding:0.875rem; border-radius:0.75rem; background:var(--color-primary); color:var(--color-on-primary); font-weight:700; font-size:0.9rem; cursor:pointer; border:none; transition:opacity 0.2s; }
+  .btn-primary:hover { opacity:0.9; }
+  .btn-primary:disabled { opacity:0.6; cursor:not-allowed; }
+  .alert { padding:0.75rem 1rem; border-radius:0.75rem; margin-bottom:1rem; font-size:0.85rem; display:none; }
+  .alert.show { display:block; }
+  .alert-error { background:#ffdad6; color:#93000a; border:1px solid #ffb4ab; }
+  .alert-success { background:#d4edda; color:#155724; border:1px solid #c3e6cb; }
+  .step { display:none; }
+  .step.active { display:block; }
+  .progress-bar { height:4px; background:var(--color-outline-variant); border-radius:999px; margin-bottom:1.5rem; overflow:hidden; }
+  .progress-fill { height:100%; background:var(--color-primary); border-radius:999px; transition:width 0.4s; }
+  label { display:block; font-weight:600; font-size:0.825rem; margin-bottom:0.4rem; color:var(--color-on-surface); }
+  .optional { color:var(--color-on-surface-variant); font-weight:400; font-size:0.75rem; }
+</style>
+</head>
+<body style="background:var(--color-surface); color:var(--color-on-surface); min-height:100vh; padding:1rem;">
+
+<div style="width:100%; max-width:440px; margin:0 auto; padding-bottom:2rem;">
+  <!-- Logo -->
+  <div style="text-align:center; margin-bottom:1.5rem; padding-top:1rem;">
+    <div style="display:inline-flex; align-items:center; gap:0.5rem; background:var(--color-surface-container-low); padding:0.5rem 1rem; border-radius:999px; margin-bottom:0.75rem;">
+      <span class="material-symbols-outlined" style="color:var(--color-primary)">directions_bus</span>
+      <span style="font-weight:700; color:var(--color-primary)">ROUTELESS</span>
+    </div>
+    <h1 style="font-size:1.4rem; font-weight:700; color:var(--color-on-surface); margin:0 0 0.25rem;">Create Student Account</h1>
+    <p style="color:var(--color-on-surface-variant); font-size:0.85rem;" id="step-subtitle">Step 1 of 2 — Personal Details</p>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:50%;"></div></div>
+
+  <!-- Alert -->
+  <div class="alert alert-error" id="register-alert"></div>
+  <div class="alert alert-success" id="register-success"></div>
+
+  <!-- Form Card -->
+  <div style="background:var(--color-surface-container-lowest); border:1px solid var(--color-outline-variant); border-radius:1rem; padding:1.5rem; box-shadow:0 2px 16px rgba(0,0,0,0.06);">
+
+    <form id="register-form" novalidate>
+
+      <!-- STEP 1: Personal Details -->
+      <div class="step active" id="step-1">
+        <div style="margin-bottom:1rem;">
+          <label>Full Name</label>
+          <input class="input-field" id="reg-name" type="text" placeholder="e.g. Sahana Gowda" required/>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <label>Email Address</label>
+          <input class="input-field" id="reg-email" type="email" placeholder="student@example.com" required/>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <label>Mobile Number <span class="optional">(optional)</span></label>
+          <input class="input-field" id="reg-phone" type="tel" placeholder="+91 94800 00000"/>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <label>Date of Birth <span class="optional">(optional)</span></label>
+          <input class="input-field" id="reg-dob" type="date"/>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <label>Password</label>
+          <div style="position:relative;">
+            <input class="input-field" id="reg-password" type="password" placeholder="Min 8 characters" required style="padding-right:3rem;"/>
+            <button type="button" onclick="togglePwd('reg-password', 'eye1')" style="position:absolute; right:0.75rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--color-on-surface-variant);">
+              <span class="material-symbols-outlined" id="eye1" style="font-size:1.1rem;">visibility</span>
+            </button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:1.5rem;">
+          <label>Confirm Password</label>
+          <input class="input-field" id="reg-confirm" type="password" placeholder="Repeat password" required/>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <label>Preferred Language</label>
+          <select class="input-field" id="reg-language">
+            <option value="kn">ಕನ್ನಡ — Kannada</option>
+            <option value="en" selected>English</option>
+            <option value="hi">हिन्दी — Hindi</option>
+            <option value="te">తెలుగు — Telugu</option>
+            <option value="ta">தமிழ் — Tamil</option>
+            <option value="ml">മലയാളം — Malayalam</option>
+          </select>
+        </div>
+
+        <button type="button" class="btn-primary" onclick="goStep2()">Next: Education Details →</button>
+      </div>
+
+      <!-- STEP 2: Education Details -->
+      <div class="step" id="step-2">
+        <div style="margin-bottom:1rem;">
+          <label>District</label>
+          <select class="input-field" id="reg-district">
+            <option value="">Select District</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <label>Taluk</label>
+          <input class="input-field" id="reg-taluk" type="text" placeholder="e.g. Byadgi" required/>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <label>Village</label>
+          <input class="input-field" id="reg-village" type="text" placeholder="e.g. Motebennur" required/>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <label>School / College Name</label>
+          <input class="input-field" id="reg-institution" type="text" placeholder="e.g. Govt First Grade College, Haveri" required/>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <label>Institution Type</label>
+          <select class="input-field" id="reg-inst-type">
+            <option value="school">School (High School)</option>
+            <option value="puc">PU College</option>
+            <option value="college" selected>Degree College</option>
+            <option value="engineering">Engineering College</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <label>Class / Course</label>
+          <input class="input-field" id="reg-course" type="text" placeholder="e.g. B.Sc Computer Science"/>
+        </div>
+
+        <div style="margin-bottom:1.5rem;">
+          <label>Year of Study</label>
+          <select class="input-field" id="reg-year">
+            <option value="1st Year">1st Year</option>
+            <option value="2nd Year">2nd Year</option>
+            <option value="3rd Year">3rd Year</option>
+            <option value="4th Year">4th Year</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div style="display:flex; gap:0.75rem;">
+          <button type="button" onclick="goStep1()" style="flex:1; padding:0.875rem; border-radius:0.75rem; background:var(--color-surface-container); color:var(--color-on-surface); font-weight:700; font-size:0.9rem; cursor:pointer; border:none;">← Back</button>
+          <button type="submit" class="btn-primary" style="flex:2;" id="register-btn">
+            <span id="register-btn-text">Create Account</span>
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <div style="text-align:center; margin-top:1.25rem; font-size:0.85rem; color:var(--color-on-surface-variant);">
+    Already have an account?
+    <a href="/login" style="color:var(--color-primary); font-weight:600; text-decoration:none; margin-left:0.25rem;">Sign In</a>
+  </div>
+</div>
+
+<script>
+  function togglePwd(id, iconId) {
+    const input = document.getElementById(id);
+    const icon = document.getElementById(iconId);
+    input.type = input.type === 'password' ? 'text' : 'password';
+    icon.textContent = input.type === 'password' ? 'visibility' : 'visibility_off';
+  }
+
+  // Load districts from API
+  async function loadDistricts() {
+    const sel = document.getElementById('reg-district');
+    try {
+      const res = await fetch('/api/locations/districts');
+      const data = await res.json();
+      (data.districts || []).forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d.name;
+        opt.textContent = `${d.name} — ${d.kannada_name}`;
+        sel.appendChild(opt);
+      });
+      // Default to Haveri
+      sel.value = 'Haveri';
+      document.getElementById('reg-taluk').value = 'Byadgi';
+    } catch(e) {
+      // Fallback: add common districts
+      ['Haveri','Dharwad','Belagavi','Davanagere','Mysuru','Bengaluru Urban'].forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d; opt.textContent = d; sel.appendChild(opt);
+      });
+      sel.value = 'Haveri';
+    }
+  }
+
+  loadDistricts();
+
+  function goStep2() {
+    const name = document.getElementById('reg-name').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const pwd = document.getElementById('reg-password').value;
+    const confirm = document.getElementById('reg-confirm').value;
+    const alert = document.getElementById('register-alert');
+
+    alert.classList.remove('show');
+
+    if (!name) return showAlert('Full name is required.');
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showAlert('Please enter a valid email address.');
+    if (pwd.length < 8) return showAlert('Password must be at least 8 characters.');
+    if (pwd !== confirm) return showAlert('Passwords do not match.');
+
+    document.getElementById('step-1').classList.remove('active');
+    document.getElementById('step-2').classList.add('active');
+    document.getElementById('step-subtitle').textContent = 'Step 2 of 2 — Education Details';
+    document.getElementById('progress-fill').style.width = '100%';
+  }
+
+  function goStep1() {
+    document.getElementById('step-2').classList.remove('active');
+    document.getElementById('step-1').classList.add('active');
+    document.getElementById('step-subtitle').textContent = 'Step 1 of 2 — Personal Details';
+    document.getElementById('progress-fill').style.width = '50%';
+  }
+
+  function showAlert(msg, type = 'error') {
+    const el = type === 'success' ? document.getElementById('register-success') : document.getElementById('register-alert');
+    const hideEl = type === 'success' ? document.getElementById('register-alert') : document.getElementById('register-success');
+    el.textContent = msg;
+    el.classList.add('show');
+    hideEl.classList.remove('show');
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  document.getElementById('register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const village = document.getElementById('reg-village').value.trim();
+    const institution = document.getElementById('reg-institution').value.trim();
+
+    if (!village) return showAlert('Village name is required.');
+    if (!institution) return showAlert('Institution name is required.');
+
+    const btn = document.getElementById('register-btn');
+    const btnText = document.getElementById('register-btn-text');
+    btn.disabled = true;
+    btnText.textContent = 'Creating account...';
+
+    const payload = {
+      full_name: document.getElementById('reg-name').value.trim(),
+      email: document.getElementById('reg-email').value.trim().toLowerCase(),
+      password: document.getElementById('reg-password').value,
+      phone_number: document.getElementById('reg-phone').value.trim(),
+      village,
+      institution,
+      district: document.getElementById('reg-district').value,
+      taluk: document.getElementById('reg-taluk').value.trim(),
+      preferred_language: document.getElementById('reg-language').value,
+      course: document.getElementById('reg-course').value.trim(),
+      class_year: document.getElementById('reg-year').value,
+      role: 'student'
+    };
+
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        localStorage.setItem('routeless_token', data.token);
+        localStorage.setItem('routeless_user', JSON.stringify(data.user));
+        if (data.user.preferred_language) localStorage.setItem('routeless_lang', data.user.preferred_language);
+        showAlert('Account created successfully! Redirecting...', 'success');
+        setTimeout(() => window.location.href = '/', 1500);
+      } else {
+        showAlert(data.error || 'Registration failed. Please try again.');
+      }
+    } catch (err) {
+      showAlert('Network error. Please check your connection.');
+    } finally {
+      btn.disabled = false;
+      btnText.textContent = 'Create Account';
+    }
+  });
+</script>
+<script src="/public/js/routeless-karnataka.js"></script>
+</body>
+</html>

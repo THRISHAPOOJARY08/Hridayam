@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Student Pass — Routeless Karnataka</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/public/css/routeless-theme.css"/>
+<!-- QR Code library (pure JS, no external dependency) -->
+<script>
+// Minimal QR Code generator using qrcode-generator approach via canvas
+// We'll use a data URI approach with qr-server API fallback drawn to canvas
+</script>
+<style>
+  body { font-family: 'Inter', sans-serif; }
+  .pass-card {
+    background: linear-gradient(135deg, var(--color-primary-container) 0%, var(--color-primary) 100%);
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .pass-card::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 150px; height: 150px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+  }
+  .pass-card::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -20px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .status-badge { display:inline-flex; align-items:center; gap:0.3rem; padding:0.25rem 0.75rem; border-radius:999px; font-size:0.78rem; font-weight:700; }
+  .status-active { background:#d4edda; color:#155724; }
+  .status-expired { background:#ffdad6; color:#93000a; }
+  .status-revoked { background:#fff3cd; color:#856404; }
+  #qr-canvas { border-radius: 0.75rem; background: white; padding: 0.5rem; }
+  .nav-btn { display:flex; flex-direction:column; align-items:center; gap:0.2rem; padding:0.5rem 0.75rem; border-radius:0.75rem; cursor:pointer; border:none; background:none; color:var(--color-on-surface-variant); transition:color 0.2s; min-width:60px; }
+  .nav-btn.active, .nav-btn:hover { color: var(--color-primary); }
+  .tab-content { display:none; }
+  .tab-content.active { display:block; }
+  .info-row { display:flex; align-items:flex-start; gap:0.75rem; padding:0.75rem 0; border-bottom:1px solid var(--color-outline-variant); }
+  .info-row:last-child { border-bottom:none; }
+  .scan-box { border:3px dashed var(--color-outline-variant); border-radius:1rem; padding:2rem; text-align:center; cursor:pointer; transition:border-color 0.2s; }
+  .scan-box:hover { border-color:var(--color-primary); }
+  #video { width:100%; border-radius:0.75rem; display:none; }
+  #scan-result { display:none; }
+</style>
+</head>
+<body style="background:var(--color-surface); color:var(--color-on-surface); min-height:100vh; display:flex; flex-direction:column; padding-bottom:5rem;">
+
+<!-- Header -->
+<header style="background:var(--color-surface-container-lowest); border-bottom:1px solid var(--color-border); padding:0.75rem 1rem; display:flex; align-items:center; gap:0.75rem; position:sticky; top:0; z-index:40;">
+  <button onclick="window.history.back()" style="background:none; border:none; cursor:pointer; padding:0.25rem; border-radius:50%; color:var(--color-on-surface-variant);">
+    <span class="material-symbols-outlined">arrow_back</span>
+  </button>
+  <div>
+    <h1 style="font-size:1rem; font-weight:700; margin:0; color:var(--color-on-surface);">Student Digital Pass</h1>
+    <p style="font-size:0.75rem; color:var(--color-on-surface-variant); margin:0;">ವಿದ್ಯಾರ್ಥಿ ಡಿಜಿಟಲ್ ಪಾಸ್</p>
+  </div>
+  <button onclick="window.location.href='/'" style="margin-left:auto; background:none; border:none; cursor:pointer; padding:0.25rem; color:var(--color-on-surface-variant);">
+    <span class="material-symbols-outlined">home</span>
+  </button>
+</header>
+
+<!-- Tabs -->
+<div style="display:flex; border-bottom:1px solid var(--color-outline-variant); background:var(--color-surface-container-lowest); padding:0 1rem;">
+  <button class="tab-btn" data-tab="my-pass" style="flex:1; padding:0.875rem 0.5rem; font-weight:600; font-size:0.85rem; border:none; background:none; cursor:pointer; border-bottom:2.5px solid var(--color-primary); color:var(--color-primary);">My Pass</button>
+  <button class="tab-btn" data-tab="verify-pass" style="flex:1; padding:0.875rem 0.5rem; font-weight:600; font-size:0.85rem; border:none; background:none; cursor:pointer; border-bottom:2.5px solid transparent; color:var(--color-on-surface-variant);">Verify / Scan</button>
+</div>
+
+<!-- Content -->
+<main style="flex:1; padding:1rem; max-width:500px; margin:0 auto; width:100%;">
+
+  <!-- MY PASS TAB -->
+  <div class="tab-content active" id="tab-my-pass">
+    <div id="pass-loading" style="text-align:center; padding:3rem 1rem; color:var(--color-on-surface-variant);">
+      <span class="material-symbols-outlined" style="font-size:2.5rem; display:block; margin-bottom:0.5rem; animation:spin 1s linear infinite;">refresh</span>
+      Loading your pass...
+    </div>
+
+    <div id="pass-content" style="display:none;">
+      <!-- Pass card -->
+      <div class="pass-card" id="pass-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem; position:relative; z-index:1;">
+          <div>
+            <div style="font-size:0.7rem; opacity:0.8; text-transform:uppercase; letter-spacing:0.05em;">Karnataka Rural Student Pass</div>
+            <div style="font-size:0.65rem; opacity:0.6;">ಕರ್ನಾಟಕ ಗ್ರಾಮೀಣ ವಿದ್ಯಾರ್ಥಿ ಪಾಸ್</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="background:rgba(255,255,255,0.2); border-radius:0.5rem; padding:0.3rem 0.6rem; font-size:0.7rem; font-weight:700;">KSRTC VALID</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:1rem; align-items:flex-start; position:relative; z-index:1;">
+          <div style="flex:1;">
+            <div id="pass-name" style="font-size:1.2rem; font-weight:700; margin-bottom:0.25rem;"></div>
+            <div id="pass-institution" style="font-size:0.8rem; opacity:0.85; margin-bottom:0.5rem;"></div>
+            <div style="display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:0.75rem;">
+              <span id="pass-status-badge" class="status-badge status-active">● Active</span>
+            </div>
+            <div style="font-size:0.75rem; opacity:0.8;">
+              <div>Pass No: <strong id="pass-number"></strong></div>
+              <div>Village: <span id="pass-village"></span></div>
+              <div>Valid Until: <strong id="pass-expiry"></strong></div>
+            </div>
+          </div>
+          <div style="text-align:center; flex-shrink:0;">
+            <div id="qr-wrapper" style="background:white; border-radius:0.5rem; padding:0.5rem; display:inline-block;">
+              <canvas id="qr-canvas" width="120" height="120"></canvas>
+            </div>
+            <div style="font-size:0.65rem; opacity:0.7; margin-top:0.25rem;">Scan to verify</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-top:1rem;">
+        <button onclick="downloadPass()" style="padding:0.75rem; border-radius:0.75rem; background:var(--color-surface-container); border:1.5px solid var(--color-outline-variant); color:var(--color-on-surface); font-weight:600; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.4rem;">
+          <span class="material-symbols-outlined" style="font-size:1.1rem;">download</span> Download
+        </button>
+        <button onclick="renewMyPass()" style="padding:0.75rem; border-radius:0.75rem; background:var(--color-primary); border:none; color:var(--color-on-primary); font-weight:600; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.4rem;">
+          <span class="material-symbols-outlined" style="font-size:1.1rem;">refresh</span> Renew Pass
+        </button>
+      </div>
+
+      <!-- Pass details -->
+      <div style="background:var(--color-surface-container-lowest); border:1px solid var(--color-outline-variant); border-radius:1rem; padding:1rem; margin-top:1rem;">
+        <h3 style="font-size:0.9rem; font-weight:700; margin:0 0 0.75rem; color:var(--color-on-surface);">Pass Details</h3>
+        <div class="info-row">
+          <span class="material-symbols-outlined" style="color:var(--color-primary); font-size:1.1rem; flex-shrink:0;">person</span>
+          <div><div style="font-size:0.75rem; color:var(--color-on-surface-variant);">Student Name</div><div id="detail-name" style="font-weight:600; font-size:0.875rem;"></div></div>
+        </div>
+        <div class="info-row">
+          <span class="material-symbols-outlined" style="color:var(--color-secondary); font-size:1.1rem; flex-shrink:0;">school</span>
+          <div><div style="font-size:0.75rem; color:var(--color-on-surface-variant);">Institution</div><div id="detail-inst" style="font-weight:600; font-size:0.875rem;"></div></div>
+        </div>
+        <div class="info-row">
+          <span class="material-symbols-outlined" style="color:var(--color-primary); font-size:1.1rem; flex-shrink:0;">location_on</span>
+          <div><div style="font-size:0.75rem; color:var(--color-on-surface-variant);">District / Village</div><div id="detail-location" style="font-weight:600; font-size:0.875rem;"></div></div>
+        </div>
+        <div class="info-row">
+          <span class="material-symbols-outlined" style="color:var(--color-secondary); font-size:1.1rem; flex-shrink:0;">menu_book</span>
+          <div><div style="font-size:0.75rem; color:var(--color-on-surface-variant);">Course / Year</div><div id="detail-course" style="font-weight:600; font-size:0.875rem;"></div></div>
+        </div>
+        <div class="info-row">
+          <span class="material-symbols-outlined" style="color:var(--color-primary); font-size:1.1rem; flex-shrink:0;">calendar_today</span>
+          <div><div style="font-size:0.75rem; color:var(--color-on-surface-variant);">Valid Until</div><div id="detail-expiry" style="font-weight:600; font-size:0.875rem;"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="pass-error" style="display:none; text-align:center; padding:2rem 1rem;">
+      <span class="material-symbols-outlined" style="font-size:2.5rem; color:var(--color-on-surface-variant); display:block; margin-bottom:0.5rem;">badge</span>
+      <p style="color:var(--color-on-surface-variant); font-size:0.875rem;" id="pass-error-text">Could not load pass.</p>
+      <button onclick="loadPass()" style="margin-top:1rem; padding:0.75rem 1.5rem; border-radius:0.75rem; background:var(--color-primary); color:var(--color-on-primary); border:none; cursor:pointer; font-weight:600;">Try Again</button>
+    </div>
+  </div>
+
+  <!-- VERIFY TAB -->
+  <div class="tab-content" id="tab-verify-pass">
+    <div style="margin-bottom:1rem;">
+      <h2 style="font-size:1rem; font-weight:700; margin:0 0 0.25rem; color:var(--color-on-surface);">Verify Student Pass</h2>
+      <p style="font-size:0.8rem; color:var(--color-on-surface-variant);">Scan QR code or enter pass token manually.</p>
+    </div>
+
+    <!-- Camera scan box -->
+    <div class="scan-box" id="scan-trigger" onclick="startScan()">
+      <span class="material-symbols-outlined" style="font-size:2.5rem; color:var(--color-primary); display:block; margin-bottom:0.5rem;">qr_code_scanner</span>
+      <div style="font-weight:600; color:var(--color-on-surface); margin-bottom:0.25rem;">Tap to Scan QR Code</div>
+      <div style="font-size:0.8rem; color:var(--color-on-surface-variant);">Camera permission required</div>
+    </div>
+
+    <video id="video" autoplay playsinline></video>
+
+    <div style="margin-top:1rem;">
+      <div style="font-size:0.8rem; color:var(--color-on-surface-variant); text-align:center; margin-bottom:0.75rem;">— or enter token manually —</div>
+      <div style="display:flex; gap:0.5rem;">
+        <input id="manual-token" type="text" placeholder="Paste QR token here..." style="flex:1; padding:0.75rem 1rem; border-radius:0.75rem; border:1.5px solid var(--color-outline-variant); background:var(--color-surface-container-low); color:var(--color-on-surface); outline:none; font-size:0.85rem;"/>
+        <button onclick="verifyManual()" style="padding:0.75rem 1rem; border-radius:0.75rem; background:var(--color-primary); color:var(--color-on-primary); border:none; cursor:pointer; font-weight:600; white-space:nowrap;">Verify</button>
+      </div>
+    </div>
+
+    <!-- Scan result -->
+    <div id="scan-result" style="margin-top:1.25rem; padding:1rem; border-radius:1rem; border:2px solid transparent;">
+      <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.75rem;">
+        <span class="material-symbols-outlined" id="scan-icon" style="font-size:2rem;"></span>
+        <div>
+          <div id="scan-result-title" style="font-weight:700; font-size:1rem;"></div>
+          <div id="scan-result-msg" style="font-size:0.8rem;"></div>
+        </div>
+      </div>
+      <div id="scan-student-info" style="display:none;">
+        <div style="border-top:1px solid currentColor; padding-top:0.75rem; opacity:0.8;">
+          <div id="scan-info-name" style="font-weight:600; margin-bottom:0.25rem;"></div>
+          <div id="scan-info-inst" style="font-size:0.8rem;"></div>
+          <div id="scan-info-valid" style="font-size:0.8rem; margin-top:0.25rem;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Bottom Navigation -->
+<nav style="position:fixed; bottom:0; left:0; right:0; background:var(--color-surface-container-lowest); border-top:1px solid var(--color-border); display:flex; padding:0.5rem 0; z-index:40;">
+  <button class="nav-btn" onclick="window.location.href='/'"><span class="material-symbols-outlined">home</span><span style="font-size:0.65rem;">Home</span></button>
+  <button class="nav-btn" onclick="window.location.href='/find-transport'"><span class="material-symbols-outlined">search</span><span style="font-size:0.65rem;">Find</span></button>
+  <button class="nav-btn active"><span class="material-symbols-outlined">badge</span><span style="font-size:0.65rem;">Pass</span></button>
+  <button class="nav-btn" onclick="window.location.href='/ai-chat'"><span class="material-symbols-outlined">smart_toy</span><span style="font-size:0.65rem;">AI Chat</span></button>
+  <button class="nav-btn" onclick="window.location.href='/profile'"><span class="material-symbols-outlined">person</span><span style="font-size:0.65rem;">Profile</span></button>
+</nav>
+
+<style>
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+
+<script>
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.style.borderBottomColor = 'transparent';
+        b.style.color = 'var(--color-on-surface-variant)';
+      });
+      btn.style.borderBottomColor = 'var(--color-primary)';
+      btn.style.color = 'var(--color-primary)';
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+    });
+  });
+
+  // ---- QR Code Generation (simple canvas-based using QR API) ----
+  function drawQR(canvas, text) {
+    const ctx = canvas.getContext('2d');
+    const size = canvas.width;
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    // Using qr-server.com (reliable public QR API)
+    img.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}&bgcolor=ffffff&color=000000&margin=0`;
+    img.onload = () => {
+      ctx.clearRect(0, 0, size, size);
+      ctx.drawImage(img, 0, 0, size, size);
+    };
+    img.onerror = () => {
+      // Fallback: draw a simple pattern
+      ctx.fillStyle = '#131b2e';
+      ctx.fillRect(0, 0, 10, 10);
+      ctx.fillRect(size-10, 0, 10, 10);
+      ctx.fillRect(0, size-10, 10, 10);
+      ctx.fillStyle = '#444';
+      ctx.font = '8px sans-serif';
+      ctx.fillText('QR', size/2-8, size/2+3);
+    };
+  }
+
+  async function loadPass() {
+    document.getElementById('pass-loading').style.display = 'block';
+    document.getElementById('pass-content').style.display = 'none';
+    document.getElementById('pass-error').style.display = 'none';
+
+    const token = localStorage.getItem('routeless_token');
+    if (!token) {
+      window.location.href = '/login?redirect=/student-pass';
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/passes/my', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      const data = await res.json();
+
+      if (!data.success || !data.pass) {
+        document.getElementById('pass-error-text').textContent = data.error || 'Could not load pass. Please try again.';
+        document.getElementById('pass-error').style.display = 'block';
+        document.getElementById('pass-loading').style.display = 'none';
+        return;
+      }
+
+      const p = data.pass;
+
+      // Populate pass card
+      document.getElementById('pass-name').textContent = p.student_name;
+      document.getElementById('pass-institution').textContent = p.institution;
+      document.getElementById('pass-number').textContent = p.pass_number;
+      document.getElementById('pass-village').textContent = p.village;
+      document.getElementById('pass-expiry').textContent = p.expiry_date ? p.expiry_date.split('T')[0] : 'N/A';
+
+      const badge = document.getElementById('pass-status-badge');
+      badge.textContent = '● ' + (p.status === 'active' ? 'Active' : p.status.charAt(0).toUpperCase() + p.status.slice(1));
+      badge.className = 'status-badge status-' + (p.status === 'active' ? 'active' : 'expired');
+
+      // Populate details
+      document.getElementById('detail-name').textContent = p.student_name;
+      document.getElementById('detail-inst').textContent = p.institution;
+      document.getElementById('detail-location').textContent = `${p.district} / ${p.village}`;
+      document.getElementById('detail-course').textContent = `${p.course || 'General'} — ${p.class_year || '1st Year'}`;
+      document.getElementById('detail-expiry').textContent = p.expiry_date ? p.expiry_date.split('T')[0] : 'N/A';
+
+      // Generate QR code
+      drawQR(document.getElementById('qr-canvas'), p.qr_token);
+
+      // Store for download
+      window._passData = p;
+
+      document.getElementById('pass-loading').style.display = 'none';
+      document.getElementById('pass-content').style.display = 'block';
+
+    } catch (err) {
+      document.getElementById('pass-error-text').textContent = 'Network error. Please check your connection.';
+      document.getElementById('pass-error').style.display = 'block';
+      document.getElementById('pass-loading').style.display = 'none';
+    }
+  }
+
+  async function renewMyPass() {
+    const token = localStorage.getItem('routeless_token');
+    if (!token) return;
+    if (!confirm('Renew your student pass? A new QR code will be generated.')) return;
+
+    try {
+      const res = await fetch('/api/passes/renew', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToastLocal('Pass renewed successfully!');
+        loadPass();
+      } else {
+        showToastLocal(data.error || 'Renewal failed.');
+      }
+    } catch (e) {
+      showToastLocal('Network error.');
+    }
+  }
+
+  function downloadPass() {
+    const canvas = document.getElementById('qr-canvas');
+    const p = window._passData;
+    if (!p) return;
+
+    // Create a composite canvas for download
+    const dlCanvas = document.createElement('canvas');
+    dlCanvas.width = 500;
+    dlCanvas.height = 300;
+    const ctx = dlCanvas.getContext('2d');
+
+    ctx.fillStyle = '#00236f';
+    ctx.roundRect(0, 0, 500, 300, 20);
+    ctx.fill();
+
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 14px Inter, sans-serif';
+    ctx.fillText('ROUTELESS KARNATAKA — STUDENT PASS', 20, 35);
+
+    ctx.font = 'bold 20px Inter, sans-serif';
+    ctx.fillText(p.student_name, 20, 70);
+
+    ctx.font = '13px Inter, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.fillText(p.institution, 20, 92);
+    ctx.fillText(`Pass: ${p.pass_number}`, 20, 115);
+    ctx.fillText(`Village: ${p.village}, ${p.district}`, 20, 135);
+    ctx.fillText(`Valid Until: ${p.expiry_date ? p.expiry_date.split('T')[0] : 'N/A'}`, 20, 155);
+    ctx.fillText(`Status: ${p.status.toUpperCase()}`, 20, 175);
+
+    // Draw QR on the right
+    ctx.drawImage(canvas, 350, 60, 130, 130);
+
+    // Download
+    const link = document.createElement('a');
+    link.download = `routeless-pass-${p.pass_number}.png`;
+    link.href = dlCanvas.toDataURL('image/png');
+    link.click();
+  }
+
+  // ---- Scan / Verify ----
+  let stream = null;
+  async function startScan() {
+    const video = document.getElementById('video');
+    document.getElementById('scan-trigger').style.display = 'none';
+    video.style.display = 'block';
+
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      video.srcObject = stream;
+
+      // Check QR every 500ms using BarcodeDetector if available
+      if ('BarcodeDetector' in window) {
+        const detector = new BarcodeDetector({ formats: ['qr_code'] });
+        const intervalId = setInterval(async () => {
+          try {
+            const barcodes = await detector.detect(video);
+            if (barcodes.length > 0) {
+              clearInterval(intervalId);
+              stopScan();
+              document.getElementById('manual-token').value = barcodes[0].rawValue;
+              verifyManual();
+            }
+          } catch (e) {}
+        }, 500);
+        window._scanInterval = intervalId;
+      } else {
+        // Show manual fallback message
+        setTimeout(() => {
+          stopScan();
+          showToastLocal('Camera scanning not supported. Please use manual token entry.');
+        }, 3000);
+      }
+    } catch (err) {
+      video.style.display = 'none';
+      document.getElementById('scan-trigger').style.display = 'block';
+      showToastLocal('Camera access denied. Use manual token entry.');
+    }
+  }
+
+  function stopScan() {
+    if (stream) {
+      stream.getTracks().forEach(t => t.stop());
+      stream = null;
+    }
+    if (window._scanInterval) clearInterval(window._scanInterval);
+    document.getElementById('video').style.display = 'none';
+    document.getElementById('scan-trigger').style.display = 'block';
+  }
+
+  async function verifyManual() {
+    const token = document.getElementById('manual-token').value.trim();
+    if (!token) return showToastLocal('Please enter a QR token.');
+
+    const resultEl = document.getElementById('scan-result');
+    const icon = document.getElementById('scan-icon');
+    const title = document.getElementById('scan-result-title');
+    const msg = document.getElementById('scan-result-msg');
+    const info = document.getElementById('scan-student-info');
+
+    resultEl.style.display = 'block';
+    icon.textContent = 'refresh';
+    title.textContent = 'Verifying...';
+    msg.textContent = '';
+    info.style.display = 'none';
+
+    const authToken = localStorage.getItem('routeless_token');
+
+    try {
+      const res = await fetch('/api/passes/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(authToken ? { 'Authorization': 'Bearer ' + authToken } : {})
+        },
+        body: JSON.stringify({ qr_token: token })
+      });
+      const data = await res.json();
+
+      if (data.result === 'valid') {
+        resultEl.style.border = '2px solid #2e7d32';
+        resultEl.style.background = '#d4edda';
+        resultEl.style.color = '#155724';
+        icon.textContent = 'verified';
+        title.textContent = '✓ Valid Student Pass';
+        msg.textContent = 'This is an authenticated Routeless Karnataka student pass.';
+        if (data.student) {
+          document.getElementById('scan-info-name').textContent = data.student.name;
+          document.getElementById('scan-info-inst').textContent = data.student.institution;
+          document.getElementById('scan-info-valid').textContent = `Valid until: ${data.student.valid_until ? data.student.valid_until.split('T')[0] : 'N/A'}`;
+          info.style.display = 'block';
+        }
+      } else {
+        const colorMap = { expired: '#6b4f00', revoked: '#5d4037', invalid: '#93000a', unverified: '#1a237e' };
+        const bgMap = { expired: '#fff3cd', revoked: '#efebe9', invalid: '#ffdad6', unverified: '#e8eaf6' };
+        const iconMap = { expired: 'schedule', revoked: 'block', invalid: 'error', unverified: 'pending' };
+        resultEl.style.border = `2px solid ${colorMap[data.result] || '#93000a'}`;
+        resultEl.style.background = bgMap[data.result] || '#ffdad6';
+        resultEl.style.color = colorMap[data.result] || '#93000a';
+        icon.textContent = iconMap[data.result] || 'error';
+        title.textContent = data.result.charAt(0).toUpperCase() + data.result.slice(1) + ' Pass';
+        msg.textContent = data.message;
+      }
+    } catch (err) {
+      resultEl.style.border = '2px solid #93000a';
+      resultEl.style.background = '#ffdad6';
+      resultEl.style.color = '#93000a';
+      icon.textContent = 'wifi_off';
+      title.textContent = 'Verification Failed';
+      msg.textContent = 'Network error. Please check connection.';
+    }
+  }
+
+  function showToastLocal(msg) {
+    const old = document.querySelector('.routeless-toast');
+    if (old) old.remove();
+    const toast = document.createElement('div');
+    toast.className = 'routeless-toast';
+    toast.style.cssText = 'position:fixed;top:1rem;left:50%;transform:translateX(-50%);z-index:999;padding:0.6rem 1.2rem;border-radius:999px;background:var(--color-primary);color:var(--color-on-primary);font-size:0.8rem;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,0.3);';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2500);
+  }
+
+  // Load pass on page ready
+  document.addEventListener('DOMContentLoaded', loadPass);
+</script>
+<script src="/public/js/routeless-karnataka.js"></script>
+</body>
+</html>
